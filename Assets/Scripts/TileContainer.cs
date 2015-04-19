@@ -20,15 +20,20 @@ public class TileContainer : MonoBehaviour {
 	}
 	#endregion
 	public Tile[] tiles;
-	public int size;
-	// Use this for initialization
-	void Start () {
-		size = Convert.ToInt32(Math.Sqrt (tiles.Length));
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public Tile baseTile;
+	public int size = 5;
+
+	public void createMap() {
+		tiles = new Tile[size * size];
+		for (int y = 0 ; y < size ; y++) {
+			for (int x = 0 ; x < size ; x++) {
+				Tile tile = Instantiate(baseTile);
+				tile.transform.parent = transform;
+				tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
+				tile.transform.localPosition = new Vector3(x, y, 0);
+				tiles[y * size + x] = tile;
+			}
+		}
 	}
 
 	public Tile getTile(int x, int y) {
@@ -36,6 +41,6 @@ public class TileContainer : MonoBehaviour {
 	}
 
 	public Tile getTile(Vector2 v) {
-		return this.getTile(Convert.ToInt32(v.x), Convert.ToInt32(v.y));
+		return this.getTile((int)v.x, (int)v.y);
 	}
 }
