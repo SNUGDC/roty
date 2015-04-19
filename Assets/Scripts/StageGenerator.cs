@@ -30,8 +30,8 @@ public class StageGenerator : MonoBehaviour {
 		Vector2[] nextPositions = new Vector2[block.Length];
 		for (int i = 0; i < block.Length; i++) {
 			var tile = block[i];
-			Vector2 delta = tile.transform.position - point.transform.position;
-			nextPositions[i] = new Vector2(-delta.y, delta.x) + (Vector2)point.transform.position;
+			Vector2 delta = tile.transform.localPosition - point.transform.localPosition;
+			nextPositions[i] = new Vector2(-delta.y, delta.x) + (Vector2)point.transform.localPosition;
 			if (nextPositions[i].x < 0 || nextPositions[i].x >= TileContainer.Instance.size || 
 			    nextPositions[i].y < 0 || nextPositions[i].y >= TileContainer.Instance.size) {
 				rotateRandom(block);

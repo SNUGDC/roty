@@ -39,13 +39,15 @@ public class TileContainer : MonoBehaviour {
 				tiles[FLOOR_DEPTH][y * size + x] = tile;
 			}
 		}
+		transform.localScale = new Vector3 (5.0f / size, 5.0f / size, 1);
 	}
 
 	public Tile createTile(int x, int y, int depth = FLOOR_DEPTH) {
 		Tile tile = Instantiate(baseTile);
 		tile.transform.parent = transform;
 		tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
-		tile.transform.position = new Vector3(x, y, -depth);
+		tile.transform.localPosition = new Vector3(x, y, -depth);
+		tile.transform.localScale = Vector3.one;
 		return tile;
 	}
 
@@ -66,6 +68,6 @@ public class TileContainer : MonoBehaviour {
 		Vector2 original = new Vector2 (tile.transform.position.x, tile.transform.position.y);
 		tiles[depth][(int)original.y * size + (int)original.x] = null;
 		tiles[depth][(int)v.y * size + (int)v.x] = tile;
-		tile.transform.position = new Vector3(v.x, v.y, -depth);
+		tile.transform.localPosition = new Vector3(v.x, v.y, -depth);
 	}
 }
