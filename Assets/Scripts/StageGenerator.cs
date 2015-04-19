@@ -6,8 +6,8 @@ public class StageGenerator : MonoBehaviour {
 	public Tile[] destination;
 	public int rotateCount;
 
-	Color destinationColor = new Color(240.0f/255.0F,98.0f/255.0F,146.0f/255.0F,1);
-	Color sourceColor = new Color(248.0f/255.0F,187.0f/255.0F,208.0f/255.0F,1);
+	Color destinationColor = new Color32(240,98,146,255);
+	Color sourceColor = new Color32(248,187,208,255);
 
 	void dye(Tile[] tiles, Color color) {
 		foreach (var tile in tiles) {
