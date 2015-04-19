@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class StageGenerator : MonoBehaviour {
 	public Tile[] source;
 	public Tile[] destination;
-	public int rotateCount;
+	public int transformCount;
+	public double mutationRate;
 
-	Color destinationColor = new Color32(240,98,146,255);
-	Color sourceColor = new Color32(248,187,208,255);
+	public Color destinationColor = new Color32(240,98,146,255);
+	public Color sourceColor = new Color32(248,187,208,255);
 
 	void dye(Tile[] tiles, Color color) {
 		foreach (var tile in tiles) {
-			tile.gameObject.GetComponent<Renderer>().material.color = color;
+			tile.gameObject.GetComponent<SpriteRenderer>().color = color;
 		}
 	}
 	void createStage() {
@@ -24,8 +26,39 @@ public class StageGenerator : MonoBehaviour {
 			                                              TileContainer.SOURCE_DEPTH);
 		}
 		dye (source, sourceColor);
-		for (int i = 0 ; i < rotateCount ; i ++) {
-			rotateRandom(source);
+		for (int i = 0 ; i < transformCount ; i ++) {
+			if (Random.value < mutationRate) {
+				transitionRandom(source);
+			} else {
+				rotateRandom(source);
+			}
+		}
+	}
+
+	bool isValid(Vector2[] positions) {
+		foreach (var position in positions) {
+			if (position.x < 0 || position.x >= TileContainer.Instance.size || 
+			    position.y < 0 || position.y >= TileContainer.Instance.size) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	void transitionRandom(Tile[] block) {
+		var movement = new Vector2 (Random.value > 0.5 ? 1 : -1,
+		                           Random.value > 0.5 ? 1 : -1);
+		Vector2[] nextPositions = new Vector2[block.Length];
+		for (int i = 0; i < block.Length; i++) {
+			nextPositions[i] = new Vector2(block[i].transform.position.x + movement.x,
+			                               block[i].transform.position.y + movement.y);
+		}
+		if (isValid (nextPositions)) {
+			for (int i = 0; i < block.Length; i++) {
+				TileContainer.Instance.moveTile (block [i], nextPositions [i]);
+			}
+		} else {
+			transitionRandom(block);
 		}
 	}
 
@@ -36,16 +69,16 @@ public class StageGenerator : MonoBehaviour {
 			var tile = block[i];
 			Vector2 delta = tile.transform.localPosition - point.transform.localPosition;
 			nextPositions[i] = new Vector2(-delta.y, delta.x) + (Vector2)point.transform.localPosition;
-			if (nextPositions[i].x < 0 || nextPositions[i].x >= TileContainer.Instance.size || 
-			    nextPositions[i].y < 0 || nextPositions[i].y >= TileContainer.Instance.size) {
-				rotateRandom(block);
-				return;
-			}
 		}
-		for (int i = 0; i < block.Length; i++) {
-			TileContainer.Instance.moveTile(block[i], nextPositions[i]);
+		if (isValid (nextPositions)) {
+			for (int i = 0; i < block.Length; i++) {
+				TileContainer.Instance.moveTile (block [i], nextPositions [i]);
+			}
+		} else {
+			rotateRandom(block);
 		}
 	}
+
 	// Use this for initialization
 	void Start () {
 		TileContainer.Instance.createMap ();
