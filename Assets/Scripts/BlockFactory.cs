@@ -18,8 +18,9 @@ public class BlockFactory {
 		                          Random.Range (0, TileContainer.Instance.size - (int)constraints.y));
 		var result = new List<Tile> ();
 		foreach (var coordinate in electedBlock) {
-			Debug.Log(coordinate + offset);
-			result.Add(TileContainer.Instance.getTile (coordinate + offset));
+			result.Add(
+				TileContainer.Instance.createTile(coordinate + offset, TileContainer.DESTINATION_DEPTH)
+			);
 		}
 		return result.ToArray ();
 	}

@@ -4,7 +4,7 @@ using System.Collections;
 public class StageGenerator : MonoBehaviour {
 	public Tile[] source;
 	public Tile[] destination;
-
+	public int rotateCount;
 	void dye(Tile[] tiles, Color color) {
 		foreach (var tile in tiles) {
 			tile.gameObject.GetComponent<Renderer>().material.color = color;
@@ -12,8 +12,35 @@ public class StageGenerator : MonoBehaviour {
 	}
 	void createStage() {
 		destination = BlockFactory.generate ();
-		Debug.Log (destination);
+		source = new Tile[destination.Length];
 		dye (destination, Color.red);
+		for (int i = 0; i < destination.Length; i ++) {
+			var tile = destination[i];
+			source[i] = TileContainer.Instance.createTile((Vector2)tile.transform.localPosition,
+			                                              TileContainer.SOURCE_DEPTH);
+		}
+		dye (source, Color.blue);
+		for (int i = 0 ; i < rotateCount ; i ++) {
+			rotateRandom(source);
+		}
+	}
+
+	void rotateRandom(Tile[] block) {
+		Tile point = block[Random.Range(0, block.Length)];
+		Vector2[] nextPositions = new Vector2[block.Length];
+		for (int i = 0; i < block.Length; i++) {
+			var tile = block[i];
+			Vector2 delta = tile.transform.position - point.transform.position;
+			nextPositions[i] = new Vector2(-delta.y, delta.x) + (Vector2)point.transform.position;
+			if (nextPositions[i].x < 0 || nextPositions[i].x >= TileContainer.Instance.size || 
+			    nextPositions[i].y < 0 || nextPositions[i].y >= TileContainer.Instance.size) {
+				rotateRandom(block);
+				return;
+			}
+		}
+		for (int i = 0; i < block.Length; i++) {
+			TileContainer.Instance.moveTile(block[i], nextPositions[i]);
+		}
 	}
 	// Use this for initialization
 	void Start () {
