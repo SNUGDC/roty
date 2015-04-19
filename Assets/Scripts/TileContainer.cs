@@ -23,26 +23,21 @@ public class TileContainer : MonoBehaviour {
 	public Tile baseTile;
 	public int size = 5;
 
-	public const int MAX_DEPTH = 3;
-	public const int FLOOR_DEPTH = 0;
-	public const int SOURCE_DEPTH = 2;
-	public const int DESTINATION_DEPTH = 1;
-
 	public void createMap() {
-		tiles = new Tile[MAX_DEPTH][];
-		for (int i = 0; i < MAX_DEPTH; i ++) {
+		tiles = new Tile[Depth.MAX_DEPTH][];
+		for (int i = 0; i < Depth.MAX_DEPTH; i ++) {
 			tiles[i] = new Tile[size * size];
 		}
 		for (int y = 0 ; y < size ; y++) {
 			for (int x = 0 ; x < size ; x++) {
 				Tile tile = createTile(x, y);
-				tiles[FLOOR_DEPTH][y * size + x] = tile;
+				tiles[Depth.FLOOR_DEPTH][y * size + x] = tile;
 			}
 		}
 		transform.localScale = new Vector3 (5.0f / size, 5.0f / size, 1);
 	}
 
-	public Tile createTile(int x, int y, int depth = FLOOR_DEPTH) {
+	public Tile createTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
 		Tile tile = Instantiate(baseTile);
 		tile.transform.parent = transform;
 		tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
@@ -51,21 +46,22 @@ public class TileContainer : MonoBehaviour {
 		return tile;
 	}
 
-	public Tile createTile(Vector2 v, int depth = FLOOR_DEPTH) {
-		return this.createTile((int)v.x, (int)v.y, depth);
+	public Tile createTile(Point2 v, int depth = Depth.FLOOR_DEPTH) {
+		Debug.Log (v);
+		return this.createTile(v.x, v.y, depth);
 	}
 
-	public Tile getTile(int x, int y, int depth = FLOOR_DEPTH) {
+	public Tile getTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
 		return tiles[depth][size * y + x];
 	}
 
-	public Tile getTile(Vector2 v, int depth = FLOOR_DEPTH) {
-		return this.getTile((int)v.x, (int)v.y, depth);
+	public Tile getTile(Point2 v, int depth = Depth.FLOOR_DEPTH) {
+		return this.getTile(v.x, v.y, depth);
 	}
 
-	public void moveTile(Tile tile, Vector2 v) {
+	public void moveTile(Tile tile, Point2 v) {
 		int depth = (int)-tile.transform.position.z;
-		Vector2 original = new Vector2 (tile.transform.position.x, tile.transform.position.y);
+		Point2 original = (Point2)tile.transform.position;
 		tiles[depth][(int)original.y * size + (int)original.x] = null;
 		tiles[depth][(int)v.y * size + (int)v.x] = tile;
 		tile.transform.localPosition = new Vector3(v.x, v.y, -depth);
