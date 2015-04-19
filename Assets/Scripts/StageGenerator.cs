@@ -5,6 +5,10 @@ public class StageGenerator : MonoBehaviour {
 	public Tile[] source;
 	public Tile[] destination;
 	public int rotateCount;
+
+	Color destinationColor = new Color(240.0f/255.0F,98.0f/255.0F,146.0f/255.0F,1);
+	Color sourceColor = new Color(248.0f/255.0F,187.0f/255.0F,208.0f/255.0F,1);
+
 	void dye(Tile[] tiles, Color color) {
 		foreach (var tile in tiles) {
 			tile.gameObject.GetComponent<Renderer>().material.color = color;
@@ -13,13 +17,13 @@ public class StageGenerator : MonoBehaviour {
 	void createStage() {
 		destination = BlockFactory.generate ();
 		source = new Tile[destination.Length];
-		dye (destination, Color.red);
+		dye (destination, destinationColor);
 		for (int i = 0; i < destination.Length; i ++) {
 			var tile = destination[i];
 			source[i] = TileContainer.Instance.createTile((Vector2)tile.transform.localPosition,
 			                                              TileContainer.SOURCE_DEPTH);
 		}
-		dye (source, Color.blue);
+		dye (source, sourceColor);
 		for (int i = 0 ; i < rotateCount ; i ++) {
 			rotateRandom(source);
 		}
