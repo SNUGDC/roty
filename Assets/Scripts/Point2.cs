@@ -7,6 +7,8 @@ public struct Point2 {
 		this.x = x;
 		this.y = y;
 		if (isOutOfBound ()) {
+			Debug.Log("OutOfBoundException");
+			Debug.Log(this);
 			throw new OutOfBoundException();
 		}
 	}

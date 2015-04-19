@@ -6,9 +6,9 @@ using ExtensionMethods;
 
 public class Block {
 	public readonly Polyomino polymino;
-	public readonly IEnumerable<Tile> tiles;
+	public readonly List<Tile> tiles;
 
-	public Block(IEnumerable<Tile> tiles, Polyomino polymino) {
+	public Block(List<Tile> tiles, Polyomino polymino) {
 		this.tiles = tiles;
 		this.polymino = polymino;
 	}
@@ -26,29 +26,35 @@ public class Block {
 		                   tile.point.y < 0 || tile.point.y >= TileContainer.Instance.size);
 	}
 
-	public Block transition(Point2 movement) {
+	public void transition(Point2 movement) {
 		var depth = tiles.First ().depth;
 		var moved = from tile in tiles select (Point2)tile.transform.position + movement;
-		return new Block (from point in moved select TileContainer.Instance.getTile(point, depth), polymino);
+		moveTiles (moved);
 	}
 
 	// clockwise
-	public Block rotateQuarter(Point2 pivot) {
+	public void rotateQuarter(Point2 pivot) {
 		var depth = tiles.First ().depth;
 		var rotated = from tile in tiles 
-			let delta = (Point2)tile.transform.localPosition - pivot
+			let delta = tile.point - pivot
 			select new Point2(-delta.y, delta.x) + pivot;
-		return new Block (from point in rotated select TileContainer.Instance.getTile(point, depth), polymino);
+		moveTiles (rotated);
 	}
 
-	public void move(Block block) {
+	public void moveTiles(IEnumerable<Point2> points) {
 		var tileSets = tiles.Zip (
-			block.tiles, 
-			(oldTile, newTile) =>  new { OldTile=oldTile, NewTile=newTile }
+			points, 
+			(tile, point) =>  new { target=tile, point=point }
 		);
-
 		foreach (var tileSet in tileSets) {
-			TileContainer.Instance.moveTile (tileSet.OldTile, tileSet.NewTile.point);
+			TileContainer.Instance.moveTile(tileSet.target, tileSet.point);
 		}
+	}
+	public override string ToString() {
+		var result = "Block{";
+		foreach (var tile in tiles) {
+			result += tile.point;
+		}
+		return result + "}";
 	}
 }

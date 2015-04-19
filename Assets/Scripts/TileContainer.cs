@@ -47,7 +47,6 @@ public class TileContainer : MonoBehaviour {
 	}
 
 	public Tile createTile(Point2 v, int depth = Depth.FLOOR_DEPTH) {
-		Debug.Log (v);
 		return this.createTile(v.x, v.y, depth);
 	}
 

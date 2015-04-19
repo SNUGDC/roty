@@ -15,8 +15,11 @@ public class BlockFactory {
 		frame = frame != null ? frame : candidates.Sample ().Single ();
 		var offset = new Point2 (Random.Range (0, TileContainer.Instance.size - frame.constraints.x),
 		                         Random.Range (0, TileContainer.Instance.size - frame.constraints.y));
-		var tiles = from point in frame.points 
-			select TileContainer.Instance.createTile (point + offset, depth);
+
+		List<Tile> tiles = new List<Tile> ();
+		foreach (var point in frame.points) {
+			tiles.Add(TileContainer.Instance.createTile (point + offset, depth));
+		}
 		return new Block(tiles, frame);
 	}
 }
