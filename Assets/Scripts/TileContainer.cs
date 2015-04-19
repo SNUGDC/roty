@@ -8,11 +8,11 @@ public class TileContainer : MonoBehaviour {
 	public static TileContainer Instance {
 		get {
 			if (!_instance) {
-				_instance = GameObject.FindObjectOfType(typeof(TileContainer));
+				_instance = GameObject.FindObjectOfType(typeof(TileContainer)) as TileContainer;
 				if (!_instance) {
 					GameObject container = new GameObject();
 					container.name = "TileContainer";
-					_instance = container.AddComponent(typeof(TileContainer));
+					_instance = container.AddComponent(typeof(TileContainer)) as TileContainer;
 				}
 			}
 			return _instance;
@@ -23,7 +23,7 @@ public class TileContainer : MonoBehaviour {
 	public int size;
 	// Use this for initialization
 	void Start () {
-		size = Math.Sqrt(tiles.Length);
+		size = Convert.ToInt32(Math.Sqrt (tiles.Length));
 	}
 	
 	// Update is called once per frame
@@ -36,6 +36,6 @@ public class TileContainer : MonoBehaviour {
 	}
 
 	public Tile getTile(Vector2 v) {
-		return getTile(v.x, v.y);
+		return this.getTile(Convert.ToInt32(v.x), Convert.ToInt32(v.y));
 	}
 }
