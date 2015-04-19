@@ -8,8 +8,8 @@ public class StageGenerator : MonoBehaviour {
 	public int transformCount;
 	public double mutationRate;
 
-	public Color destinationColor = new Color32(240,98,146,255);
-	public Color sourceColor = new Color32(248,187,208,255);
+	public Color destinationColor;
+	public Color sourceColor;
 
 	void dye(Tile[] tiles, Color color) {
 		foreach (var tile in tiles) {
