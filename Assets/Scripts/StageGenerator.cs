@@ -19,11 +19,21 @@ public class StageGenerator : MonoBehaviour {
 		foreach (var count in Enumerable.Range(0, 3)) {
 			Point2 point = source.tiles.Sample().First().point;
 			try {
-				source.rotateQuarter(point);
+				source.moveTiles(source.rotateQuarter(point));
 			} catch(OutOfBoundException) {
 				continue;
 			}
 		}
+		isPossible (source, destination);
+	}
+
+	bool isPossible(Block source, Block destination) {
+		Queue<Block> queue = new Queue<Block> ();
+		queue.Enqueue (source);
+		while (queue.Count > 0) {
+			Block block = queue.Dequeue();
+		}
+		return true;
 	}
 
 	// Use this for initialization

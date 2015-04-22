@@ -20,7 +20,7 @@ public class TileContainer : MonoBehaviour {
 	}
 	#endregion
 	public Tile[][] tiles;
-	public Tile baseTile;
+	public Tile[] baseTiles;
 	public int size = 5;
 
 	public void createMap() {
@@ -28,17 +28,19 @@ public class TileContainer : MonoBehaviour {
 		for (int i = 0; i < Depth.MAX_DEPTH; i ++) {
 			tiles[i] = new Tile[size * size];
 		}
-		for (int y = 0 ; y < size ; y++) {
-			for (int x = 0 ; x < size ; x++) {
-				Tile tile = createTile(x, y);
-				tiles[Depth.FLOOR_DEPTH][y * size + x] = tile;
+		for (int z = 0; z < Depth.MAX_DEPTH; z++) {
+			for (int y = 0 ; y < size ; y++) {
+				for (int x = 0 ; x < size ; x++) {
+					Tile tile = createTile(x, y, z);
+					tiles[z][y * size + x] = tile;
+				}
 			}
 		}
 		transform.localScale = new Vector3 (5.0f / size, 5.0f / size, 1);
 	}
 
 	public Tile createTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
-		Tile tile = Instantiate(baseTile);
+		Tile tile = Instantiate(baseTiles[depth]);
 		tile.transform.parent = transform;
 		tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
 		tile.transform.localPosition = new Vector3(x, y, -depth);
@@ -51,6 +53,7 @@ public class TileContainer : MonoBehaviour {
 	}
 
 	public Tile getTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
+
 		return tiles[depth][size * y + x];
 	}
 
@@ -58,11 +61,14 @@ public class TileContainer : MonoBehaviour {
 		return this.getTile(v.x, v.y, depth);
 	}
 
-	public void moveTile(Tile tile, Point2 v) {
-		int depth = (int)-tile.transform.position.z;
-		Point2 original = (Point2)tile.transform.position;
-		tiles[depth][(int)original.y * size + (int)original.x] = null;
-		tiles[depth][(int)v.y * size + (int)v.x] = tile;
-		tile.transform.localPosition = new Vector3(v.x, v.y, -depth);
+	public void moveTile(Tile srcTile, Point2 v) {
+		int depth = srcTile.depth;
+		var dstTile = getTile (v, depth);
+		tiles [depth] [dstTile.point.y * size + dstTile.point.x] = srcTile;
+		tiles [depth] [srcTile.point.y * size + srcTile.point.x] = dstTile;
+		// swap
+		var temp = srcTile.transform.position;
+		srcTile.transform.position = dstTile.transform.position;
+		dstTile.transform.position = temp;
 	}
 }

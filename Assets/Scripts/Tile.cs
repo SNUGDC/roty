@@ -10,7 +10,7 @@ public class Tile : MonoBehaviour
 	}
 	public int depth {
 		get {
-			return (int)transform.position.z;
+			return (int)Mathf.Abs(transform.position.z);
 		}
 	}
 }

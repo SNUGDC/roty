@@ -12,6 +12,11 @@ public struct Point2 {
 			throw new OutOfBoundException();
 		}
 	}
+	public int idx {
+		get {
+			return y * TileContainer.Instance.size + x;
+		}
+	}
 
 	private bool isOutOfBound() {
 		return x < 0 || x >= TileContainer.Instance.size || 
