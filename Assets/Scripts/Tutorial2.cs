@@ -78,8 +78,8 @@ public class Tutorial2 : MonoBehaviour {
 			otherText.text = " ";
 			textForButtonClick.color = Color.Lerp (textForButtonClick.color, new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,1.0f), fadeinSpeed*Time.deltaTime);
 			textForButtonClick.text = "Great!!!";
-			possible.transform.position = new Vector3(1000f,1000f,1000f);
-			impossible.transform.position = new Vector3(1000f,1000f,1000f);
+			possible.transform.position = new Vector3(10000f,10000f,1000f);
+			impossible.transform.position = new Vector3(10000f,10000f,1000f);
 			if(Time.time > timechecker + 1){
 				blocks.transform.rotation = Quaternion.Slerp(blocks.transform.rotation, Quaternion.Euler(new Vector3(0.0f,0.0f,90.0f)),fadeinSpeed*Time.deltaTime*2);
 				if(Time.time > timechecker + 2.3f){
