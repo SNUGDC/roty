@@ -25,7 +25,7 @@ public class StageGenerator : MonoBehaviour {
 			}
 		}
 		//Debug.Log ("Validate Start");
-		//Debug.Log (isPossible (source, destination));
+		Debug.Log (isPossible (source, destination));
 	}
 
 	bool isPossible(Block source, Block destination) {
@@ -41,17 +41,14 @@ public class StageGenerator : MonoBehaviour {
 			// Traverse
 			foreach (var tile in vertice.tiles) {
 				var next = vertice;
-				Debug.Log(tile.point);
 				foreach (var i in Enumerable.Range(0, 3)) {
 					try {
-						Debug.Log(next);
 						next = vertice.rotateQuarter(tile.point);
 						if (!H.Contains(next)) {
 							Q.Enqueue(next);
 							H.Add(next);
 						}
 					} catch (OutOfBoundException) {
-						Debug.Log("OutOfBoundException");
 						continue;
 					}
 				}

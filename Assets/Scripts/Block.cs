@@ -63,9 +63,17 @@ public class Block {
 			polymino
 		);
 		*/
+		if (quadrant > 3) {
+			throw new System.Exception("Invalid argument: quadrant");
+		}
 		var rotated = new List<Point2>();
 		foreach(var tile in tiles) {
 			var deltaPoint = tile.point - pivot;
+			var rotatedPoint = 
+				quadrant == 1 ? new Point2(-deltaPoint.y, deltaPoint.x) :
+					quadrant == 2 ? new Point2(-deltaPoint.x, -deltaPoint.y) :
+						quadrant == 3 ? new Point2(deltaPoint.y, -deltaPoint.x) : new Point2();
+
 			/*
 			switch(quadrant) {
 			case 1: deltaPoint = new Point2(-deltaPoint.y, deltaPoint.x); break;
@@ -73,7 +81,7 @@ public class Block {
 			case 3: deltaPoint = new Point2(deltaPoint.y, -deltaPoint.x); break;
 			}
 			*/
-			rotated.Add(new Point2(-deltaPoint.y, deltaPoint.x) + pivot);
+			rotated.Add(rotatedPoint + pivot);
 		}
 
 		var rotatedTiles = new List<Tile> ();
@@ -108,7 +116,9 @@ public class Block {
 
 	public override int GetHashCode ()
 	{
-		return base.GetHashCode ();
+		var multiplier = TileContainer.Instance.size * TileContainer.Instance.size;
+		return (from tile in tiles select tile.point.idx).Aggregate(
+			0, (prod, next) => next * multiplier + prod);
 	}
 
 	public override string ToString() {
