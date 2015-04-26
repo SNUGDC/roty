@@ -164,10 +164,10 @@ public class Tutorial : MonoBehaviour {
 		});
 		next.onClick.AddListener(() => {
 			if(stagenumber>3){
-				//Application.Loadlevel go to real game 
+				Application.LoadLevel(1);
 			}
 			else {
-					initiate = true;
+				initiate = true;
 			}
 		});
 	}
