@@ -6,6 +6,7 @@ using System.Linq;
 using ExtensionMethods;
 
 public class StageContainer : MonoBehaviour {
+	public Color[] colors;
 	#region singleton
 	private static StageContainer _instance;
 	public static StageContainer Instance {
@@ -37,8 +38,9 @@ public class StageContainer : MonoBehaviour {
 	private void createStage() {
 		Block destination = BlockFactory.generate (Depth.DESTINATION_DEPTH);
 		Block source = BlockFactory.generate (Depth.SOURCE_DEPTH, destination.polymino);
-		destination.dye(new Color(0.969f, 0.737f, 0.816f));
-		source.dye(new Color(0.918f, 0.263f, 0.482f));
+		var sampleColor = colors.Sample (2);
+		destination.dye(sampleColor.First());
+		source.dye(sampleColor.Last());
 		
 		foreach (var count in Enumerable.Range(0, Random.Range(0, 3))) {
 			Point2 point = source.tiles.Sample().First().point;
@@ -90,6 +92,9 @@ public class StageContainer : MonoBehaviour {
 	}
 	
 	public void StartLevel() {
+		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
+			button.enabled = true;
+		}
 		gotToNextStage ();
 		TileContainer.Instance.createMap ();
 		createStage ();
@@ -107,6 +112,9 @@ public class StageContainer : MonoBehaviour {
 		GetComponent<Text>().text = "Try again!";
 		Time.timeScale = 0;
 		count = 0;
+		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
+			button.enabled = false;
+		}
 	}
 
 	public void OnPressPossible() {
