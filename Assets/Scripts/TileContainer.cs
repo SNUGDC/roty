@@ -25,7 +25,15 @@ public class TileContainer : MonoBehaviour {
 	public Tile[] baseTiles;
 	public int size = 5;
 
+	public void clear() {
+		var tiles = GetComponentsInChildren (typeof(Tile));
+		foreach (var tile in tiles) {
+			Destroy(tile.gameObject);
+		}
+	}
+
 	public void createMap() {
+		clear ();
 		tiles = new Tile[Depth.MAX_DEPTH][];
 		for (int i = 0; i < Depth.MAX_DEPTH; i ++) {
 			tiles[i] = new Tile[size * size];

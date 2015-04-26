@@ -1,22 +1,26 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
 using System.Linq;
 using ExtensionMethods;
 
+public class StageContainer : MonoBehaviour {
+	private int count = 0;
+	private bool isPossible;
 
-public class StageGenerator : MonoBehaviour {
-	public int rotationCount;
-	public double mutationRate;
-
+	public void gotToNextStage() {
+		count++;
+		(GetComponent (typeof(Text)) as Text).text = "Stage " + count.ToString ();
+	}
+	
 	void createStage() {
 		Block destination = BlockFactory.generate (Depth.DESTINATION_DEPTH);
 		Block source = BlockFactory.generate (Depth.SOURCE_DEPTH, destination.polymino);
 		destination.dye(new Color(0.969f, 0.737f, 0.816f));
 		source.dye(new Color(0.918f, 0.263f, 0.482f));
-
-		var rotationCount = Random.Range (0, 1);
-		foreach (var count in Enumerable.Range(0, 3)) {
+		
+		foreach (var count in Enumerable.Range(0, Random.Range(0, 3))) {
 			Point2 point = source.tiles.Sample().First().point;
 			try {
 				source.moveTiles(source.rotateQuarter(point));
@@ -25,10 +29,11 @@ public class StageGenerator : MonoBehaviour {
 			}
 		}
 		//Debug.Log ("Validate Start");
-		Debug.Log (isPossible (source, destination));
+		isPossible = validate(source, destination);
+		Debug.Log (isPossible);
 	}
-
-	bool isPossible(Block source, Block destination) {
+	
+	bool validate(Block source, Block destination) {
 		Queue<Block> Q = new Queue<Block> ();
 		HashSet<Block> H = new HashSet<Block> ();
 		Q.Enqueue (source);
@@ -56,15 +61,34 @@ public class StageGenerator : MonoBehaviour {
 		}
 		return false;
 	}
-
+	
 	// Use this for initialization
 	void Start () {
-		TileContainer.Instance.createMap ();
-		createStage ();
+		StartLevel ();
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	void StartLevel() {
+		gotToNextStage ();
+		TileContainer.Instance.createMap ();
+		createStage ();
+		
+	}
 	
+	public void onPressPossible() {
+		if (isPossible) {
+			Debug.Log ("You are right!");
+		} else {
+			Debug.Log ("You are wrong!");
+		}
+		StartLevel ();
+	}
+	
+	public void onPressImpossible() {
+		if (!isPossible) {
+			Debug.Log ("You are right!");
+		} else {
+			Debug.Log ("You are wrong!");
+		}
+		StartLevel ();
 	}
 }
