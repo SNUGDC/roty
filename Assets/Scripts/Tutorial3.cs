@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class Tutorial : MonoBehaviour {
+public class Tutorial3 : MonoBehaviour {
 
 	public Text stageText;
 	public Text otherText;
@@ -25,11 +25,12 @@ public class Tutorial : MonoBehaviour {
 	private float timechecker;
 	private bool initiate = true;
 	private int stagenumber = 1;
+	private bool test = false;
 
 	// Use this for initialization
 	void Start () {
 	}
-
+/*
 	void DifferentInitializationByStage (int i) {
 		stageText.text = "Tutorial " + i;
 
@@ -69,23 +70,23 @@ public class Tutorial : MonoBehaviour {
 			sr.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.0f);
 		}
 	}
-
+*/
 	void Initializer () {
-		DifferentInitializationByStage(stagenumber);
+		//DifferentInitializationByStage(stagenumber);
 
 		timechecker = Time.time;
 
-		InitializeBoolean ();
+		//InitializeBoolean ();
 
-		InitializeTransparency ();
+		//InitializeTransparency ();
 
-		possible.transform.localPosition = new Vector3(-170f,-500f,0f);
-		impossible.transform.localPosition = new Vector3(170f,-500f,0f);
+		//possible.transform.localPosition = new Vector3(-170f,-500f,0f);
+		//impossible.transform.localPosition = new Vector3(170f,-500f,0f);
 
-		blocks.transform.rotation = Quaternion.Euler(new Vector3(0.0f,0.0f,0.0f));
+		//blocks.transform.rotation = Quaternion.Euler(new Vector3(0.0f,0.0f,0.0f));
 
-		Debug.Log ("initiate!!");
-		stagenumber++;
+		//Debug.Log ("initiate!!");
+		//stagenumber++;
 
 		initiate = false;
 	}
@@ -163,13 +164,13 @@ public class Tutorial : MonoBehaviour {
 			clickPossible = false;
 		});
 		next.onClick.AddListener(() => {
-			if(stagenumber>3){
-				Application.LoadLevel(1);
-			}
-			else {
-				initiate = true;
-			}
+			test = true;
+
 		});
+		if(test){
+			Application.LoadLevel("gameplay");
+			test=false;
+		}
 	}
 
 }
