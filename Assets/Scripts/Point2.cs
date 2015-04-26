@@ -20,6 +20,10 @@ public struct Point2 {
 	public bool Equals (Point2 obj) {
 		return obj.x == x && obj.y == y;
 	}
+
+	public override int GetHashCode() {
+		return idx;
+	}
 	
 	public static Point2 operator +(Point2 p1, Point2 p2) {
 		return new Point2(p1.x + p2.x, p1.y + p2.y);
