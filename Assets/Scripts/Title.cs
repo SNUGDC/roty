@@ -9,13 +9,8 @@ public class Title : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		tutorial.onClick.AddListener(() => {
-			Application.LoadLevel("tutorial1");
-		});
-		
-		gameStart.onClick.AddListener(() => {
-			Application.LoadLevel("gameplay");
-		});
+		tutorial.onClick.AddListener(() => Application.LoadLevel("tutorial1"));
+		gameStart.onClick.AddListener(() => Application.LoadLevel("gameplay"));
 	}
 	
 	// Update is called once per frame

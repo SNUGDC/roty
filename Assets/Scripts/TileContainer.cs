@@ -85,7 +85,7 @@ public class TileContainer : MonoBehaviour {
 
 		var tileSets = beforeBlock.tiles.Zip (
 			afterBlock.tiles,
-			(beforeTile, afterTile) =>  new { beforeTile=beforeTile, afterTile=afterTile }
+			(beforeTile, afterTile) =>  new { beforeTile, afterTile }
 		);
 		foreach (var tileSet in tileSets) {
 			tiles[depth][tileSet.beforeTile.point.idx] = tileSet.afterTile;
