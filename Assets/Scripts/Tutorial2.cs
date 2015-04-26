@@ -21,92 +21,47 @@ public class Tutorial2 : MonoBehaviour {
 	private float fadeinSpeed = 3.0f;
 	private bool gotonext = false;
 	private float timechecker;
-	private bool initiate = true;
-	private int stagenumber = 1;
-	private bool test = false;
+	private int i = 2;
 
 	// Use this for initialization
 	void Start () {
-	}
+		next.onClick.AddListener(() => {
+			Application.LoadLevel("tutorial3");
+		});
 
-/*	void DifferentInitializationByStage (int i) {
-		stageText.text = "Tutorial " + i;
-
-		textForButtonClick.text = "";
-		blocksText.text = "blocks";
-		goalText.text = "goal";
-		otherText.text = "Can the               be rotated into the          ?";
-		goal.transform.position = new Vector3(0,0,0);
-		//goal.GetComponentsInChildren<transform> ();
-	}
-
-	void InitializeBoolean ()
-	{
-		gotonext = false;
-		possible.enabled = false;
-		impossible.enabled = false;
-		next.enabled = false;
-		clickPossible = false;
-		clickImpossible = false;
-	}
-
-	void InitializeTransparency ()
-	{
-		goalText.color = new Color (goalText.color.r, goalText.color.g, goalText.color.b, 0.0f);
-		blocksText.color = new Color (blocksText.color.r, blocksText.color.g, blocksText.color.b, 0.0f);
-		otherText.color = new Color (otherText.color.r, otherText.color.g, otherText.color.b, 0.0f);
-		possibletext.color = new Color (possibletext.color.r, possibletext.color.g, possibletext.color.b, 0.0f);
-		impossibletext.color = new Color (impossibletext.color.r, impossibletext.color.g, impossibletext.color.b, 0.0f);
-		nexttext.color = new Color (nexttext.color.r, nexttext.color.g, nexttext.color.b, 0.0f);
-		textForButtonClick.color = new Color (textForButtonClick.color.r, textForButtonClick.color.g, textForButtonClick.color.b, 0.0f);
-		srForColors = goal.GetComponentsInChildren<SpriteRenderer> ();
-		foreach (SpriteRenderer sr in srForColors) {
-			sr.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.0f);
-		}
-		srForColors = blocks.GetComponentsInChildren<SpriteRenderer> ();
-		foreach (SpriteRenderer sr in srForColors) {
-			sr.color = new Color (sr.color.r, sr.color.g, sr.color.b, 0.0f);
-		}
-	}
-*/
-	void Initializer () {
-		//DifferentInitializationByStage(stagenumber);
+		possible.onClick.AddListener(() => {
+			textForButtonClick.color = new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,0.0f);
+			clickImpossible = false;
+			clickPossible = true;
+			timechecker=Time.time;
+		});
+		impossible.onClick.AddListener(() => {
+			clickImpossible = true;
+			textForButtonClick.color = new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,0.0f);
+		});
 
 		timechecker = Time.time;
-
-		//InitializeBoolean ();
-
-		//InitializeTransparency ();
-
-		//possible.transform.localPosition = new Vector3(-170f,-500f,0f);
-		//impossible.transform.localPosition = new Vector3(170f,-500f,0f);
-
-		//blocks.transform.rotation = Quaternion.Euler(new Vector3(0.0f,0.0f,0.0f));
-
-		//Debug.Log ("initiate!!");
-		//stagenumber++;
-
-		initiate = false;
 	}
+
 
 	void TutorialAppears ()
 	{
 		if (Time.time > timechecker + 1) {
+			otherText.color = Color.Lerp (otherText.color, new Color (otherText.color.r, otherText.color.g, otherText.color.b, 1.0f), fadeinSpeed * Time.deltaTime);
+		}
+		if (Time.time > timechecker + 2) {
 			srForColors = goal.GetComponentsInChildren<SpriteRenderer> ();
 			foreach (SpriteRenderer sr in srForColors) {
 				sr.color = Color.Lerp (sr.color, new Color (sr.color.r, sr.color.g, sr.color.b, 1.0f), fadeinSpeed * Time.deltaTime);
 			}
 		}
-		if (Time.time > timechecker + 3) {
+		if (Time.time > timechecker + 2.5f) {
 			srForColors = blocks.GetComponentsInChildren<SpriteRenderer> ();
 			foreach (SpriteRenderer sr in srForColors) {
 				sr.color = Color.Lerp (sr.color, new Color (sr.color.r, sr.color.g, sr.color.b, 1.0f), fadeinSpeed * Time.deltaTime);
 			}
 		}
-		if (Time.time > timechecker + 5) {
-			otherText.color = Color.Lerp (otherText.color, new Color (otherText.color.r, otherText.color.g, otherText.color.b, 1.0f), fadeinSpeed * Time.deltaTime);
-		}
-		if (Time.time > timechecker + 6) {
+		if (Time.time > timechecker + 3) {
 			possible.enabled = true;
 			impossible.enabled = true;
 			possibletext.color = Color.Lerp (possibletext.color, new Color (possibletext.color.r, possibletext.color.g, possibletext.color.b, 1.0f), fadeinSpeed * Time.deltaTime);
@@ -116,9 +71,6 @@ public class Tutorial2 : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (initiate){
-			Initializer();
-		}
 
 		TutorialAppears ();
 
@@ -128,11 +80,24 @@ public class Tutorial2 : MonoBehaviour {
 			textForButtonClick.text = "Great!!!";
 			possible.transform.position = new Vector3(1000f,1000f,1000f);
 			impossible.transform.position = new Vector3(1000f,1000f,1000f);
-			if(textForButtonClick.color.a > 0.9){
-				blocks.transform.rotation = Quaternion.Slerp(blocks.transform.rotation, Quaternion.Euler(new Vector3(0.0f,0.0f,-90.0f)),fadeinSpeed*Time.deltaTime);
-				gotonext = true;
+			if(Time.time > timechecker + 1){
+				blocks.transform.rotation = Quaternion.Slerp(blocks.transform.rotation, Quaternion.Euler(new Vector3(0.0f,0.0f,90.0f)),fadeinSpeed*Time.deltaTime*2);
+				if(Time.time > timechecker + 2.3f){
+					gotonext=true;
+				}
+			}
+			if(Time.time > timechecker + i){
+				blocks.transform.position = new Vector3(0,1,0);
+				blocks.transform.Find("1").localPosition = new Vector3(0,1,-2);
+				blocks.transform.Find("2").localPosition = new Vector3(0,0,-2);
+				blocks.transform.Find("3").localPosition = new Vector3(-1,1,-2);
+				blocks.transform.rotation = Quaternion.Euler (new Vector3(0,0,0));
+				timechecker = Time.time;
+				i = 9999;
 			}
 		}
+
+
 		if (clickImpossible){
 			otherText.text = " ";
 			textForButtonClick.color = Color.Lerp (textForButtonClick.color, new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,1.0f), fadeinSpeed*Time.deltaTime);
@@ -142,26 +107,6 @@ public class Tutorial2 : MonoBehaviour {
 		if (gotonext) {
 			next.enabled = true;
 			nexttext.color = Color.Lerp (nexttext.color, new Color(nexttext.color.r,nexttext.color.g,nexttext.color.b,1.0f), fadeinSpeed*Time.deltaTime);
-		}
-
-
-		possible.onClick.AddListener(() => {
-			clickImpossible = false;
-			textForButtonClick.color = new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,0.0f);
-			clickPossible = true;
-		});
-		impossible.onClick.AddListener(() => {
-			clickImpossible = true;
-			textForButtonClick.color = new Color(textForButtonClick.color.r,textForButtonClick.color.g,textForButtonClick.color.b,0.0f);
-			clickPossible = false;
-		});
-		next.onClick.AddListener(() => {
-			test = true;
-			
-		});
-		if(test){
-			Application.LoadLevel("tutorial3");
-			test=false;
 		}
 	}
 
