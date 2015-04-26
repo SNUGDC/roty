@@ -90,6 +90,9 @@ public class StageContainer : MonoBehaviour {
 	}
 	
 	public void StartLevel() {
+		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
+			button.enabled = true;
+		}
 		gotToNextStage ();
 		TileContainer.Instance.createMap ();
 		createStage ();
@@ -107,6 +110,9 @@ public class StageContainer : MonoBehaviour {
 		GetComponent<Text>().text = "Try again!";
 		Time.timeScale = 0;
 		count = 0;
+		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
+			button.enabled = false;
+		}
 	}
 
 	public void OnPressPossible() {
