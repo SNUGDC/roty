@@ -10,11 +10,11 @@ public class TileContainer : MonoBehaviour {
 	public static TileContainer Instance {
 		get {
 			if (!_instance) {
-				_instance = GameObject.FindObjectOfType(typeof(TileContainer)) as TileContainer;
+				_instance = FindObjectOfType<TileContainer>();
 				if (!_instance) {
 					GameObject container = new GameObject();
 					container.name = "TileContainer";
-					_instance = container.AddComponent(typeof(TileContainer)) as TileContainer;
+					_instance = container.AddComponent<TileContainer>();
 				}
 			}
 			return _instance;
@@ -26,7 +26,7 @@ public class TileContainer : MonoBehaviour {
 	public int size = 5;
 
 	public void clear() {
-		var tiles = GetComponentsInChildren (typeof(Tile));
+		var tiles = GetComponentsInChildren<Tile> ();
 		foreach (var tile in tiles) {
 			Destroy(tile.gameObject);
 		}
