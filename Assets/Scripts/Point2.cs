@@ -6,11 +6,6 @@ public struct Point2 {
 	public Point2(int x, int y) {
 		this.x = x;
 		this.y = y;
-		if (isOutOfBound ()) {
-			Debug.Log("OutOfBoundException");
-			Debug.Log(this);
-			throw new OutOfBoundException();
-		}
 	}
 	public int idx {
 		get {
@@ -18,11 +13,14 @@ public struct Point2 {
 		}
 	}
 
-	private bool isOutOfBound() {
-		return x < 0 || x >= TileContainer.Instance.size || 
-			y < 0 || y >= TileContainer.Instance.size;
+	public override bool Equals (object obj) {
+		return Equals((Point2)obj);
 	}
-
+	
+	public bool Equals (Point2 obj) {
+		return obj.x == x && obj.y == y;
+	}
+	
 	public static Point2 operator +(Point2 p1, Point2 p2) {
 		return new Point2(p1.x + p2.x, p1.y + p2.y);
 	}

@@ -15,7 +15,7 @@ public class StageGenerator : MonoBehaviour {
 		destination.dye(new Color(0.969f, 0.737f, 0.816f));
 		source.dye(new Color(0.918f, 0.263f, 0.482f));
 
-		var rotationCount = Random.Range (0, 3);
+		var rotationCount = Random.Range (0, 1);
 		foreach (var count in Enumerable.Range(0, 3)) {
 			Point2 point = source.tiles.Sample().First().point;
 			try {
@@ -24,16 +24,40 @@ public class StageGenerator : MonoBehaviour {
 				continue;
 			}
 		}
-		isPossible (source, destination);
+		//Debug.Log ("Validate Start");
+		//Debug.Log (isPossible (source, destination));
 	}
 
 	bool isPossible(Block source, Block destination) {
-		Queue<Block> queue = new Queue<Block> ();
-		queue.Enqueue (source);
-		while (queue.Count > 0) {
-			Block block = queue.Dequeue();
+		Queue<Block> Q = new Queue<Block> ();
+		HashSet<Block> H = new HashSet<Block> ();
+		Q.Enqueue (source);
+		H.Add (source);
+		while (Q.Count > 0) {
+			Block vertice = Q.Dequeue();
+			if (vertice.Equals(destination)) {
+				return true;
+			}
+			// Traverse
+			foreach (var tile in vertice.tiles) {
+				var next = vertice;
+				Debug.Log(tile.point);
+				foreach (var i in Enumerable.Range(0, 3)) {
+					try {
+						Debug.Log(next);
+						next = vertice.rotateQuarter(tile.point);
+						if (!H.Contains(next)) {
+							Q.Enqueue(next);
+							H.Add(next);
+						}
+					} catch (OutOfBoundException) {
+						Debug.Log("OutOfBoundException");
+						continue;
+					}
+				}
+			}
 		}
-		return true;
+		return false;
 	}
 
 	// Use this for initialization

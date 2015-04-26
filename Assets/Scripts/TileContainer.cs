@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using ExtensionMethods;
 
 public class TileContainer : MonoBehaviour {
+
 	#region singleton
 	private static TileContainer _instance;
 	public static TileContainer Instance {
@@ -42,7 +44,9 @@ public class TileContainer : MonoBehaviour {
 	public Tile createTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
 		Tile tile = Instantiate(baseTiles[depth]);
 		tile.transform.parent = transform;
-		tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
+		tile.point = new Point2 (x, y);
+		tile.depth = depth;
+		tile.name = "Tile (" + x.ToString() + ", " + y.ToString() + ", " + depth.ToString() + ")";
 		tile.transform.localPosition = new Vector3(x, y, -depth);
 		tile.transform.localScale = Vector3.one;
 		return tile;
@@ -52,8 +56,15 @@ public class TileContainer : MonoBehaviour {
 		return this.createTile(v.x, v.y, depth);
 	}
 
-	public Tile getTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
+	private bool isOutOfBound(int x, int y) {
+		return x < 0 || x >= TileContainer.Instance.size || 
+			y < 0 || y >= TileContainer.Instance.size;
+	}
 
+	public Tile getTile(int x, int y, int depth = Depth.FLOOR_DEPTH) {
+		if (isOutOfBound (x, y)) {
+			throw new OutOfBoundException();
+		}
 		return tiles[depth][size * y + x];
 	}
 
@@ -61,14 +72,28 @@ public class TileContainer : MonoBehaviour {
 		return this.getTile(v.x, v.y, depth);
 	}
 
-	public void moveTile(Tile srcTile, Point2 v) {
-		int depth = srcTile.depth;
-		var dstTile = getTile (v, depth);
-		tiles [depth] [dstTile.point.y * size + dstTile.point.x] = srcTile;
-		tiles [depth] [srcTile.point.y * size + srcTile.point.x] = dstTile;
-		// swap
-		var temp = srcTile.transform.position;
-		srcTile.transform.position = dstTile.transform.position;
-		dstTile.transform.position = temp;
+	public void moveBlock(Block beforeBlock, Block afterBlock) {
+		int depth = beforeBlock.depth;
+
+		var tileSets = beforeBlock.tiles.Zip (
+			afterBlock.tiles,
+			(beforeTile, afterTile) =>  new { beforeTile=beforeTile, afterTile=afterTile }
+		);
+		foreach (var tileSet in tileSets) {
+			tiles[depth][tileSet.beforeTile.point.idx] = tileSet.afterTile;
+			tiles[depth][tileSet.afterTile.point.idx] = tileSet.beforeTile;
+
+			tileSet.beforeTile.transform.position = new Vector3(tileSet.afterTile.point.x,
+			                                                    tileSet.afterTile.point.y,
+			                                                    -depth);
+
+			tileSet.afterTile.transform.position = new Vector3(tileSet.beforeTile.point.x,
+			                                                   tileSet.beforeTile.point.y,
+			                                                   -depth);
+		}
+		foreach (var tileSet in tileSets) {
+			tileSet.beforeTile.point = (Point2)tileSet.beforeTile.transform.position;
+			tileSet.afterTile.point = (Point2)tileSet.afterTile.transform.position;
+		}
 	}
 }

@@ -18,7 +18,7 @@ public class BlockFactory {
 
 		List<Tile> tiles = new List<Tile> ();
 		foreach (var point in frame.points) {
-			tiles.Add(TileContainer.Instance.createTile (point + offset, depth));
+			tiles.Add(TileContainer.Instance.getTile (point + offset, depth));
 		}
 		return new Block(tiles, frame);
 	}

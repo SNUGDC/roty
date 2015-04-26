@@ -7,12 +7,18 @@ using ExtensionMethods;
 public class Block {
 	public readonly Polyomino polymino;
 	public readonly IEnumerable<Tile> tiles;
+	public readonly Color color;
 
 	public Block(IEnumerable<Tile> tiles, Polyomino polymino) {
 		this.tiles = tiles;
 		this.polymino = polymino;
 	}
 
+	public int depth {
+		get {
+			return tiles.First().depth;
+		}
+	}
 
 	public void dye(Color color) {
 		foreach (var tile in tiles) {
@@ -28,53 +34,66 @@ public class Block {
 
 	public Block transition(Point2 movement) {
 		var depth = tiles.First ().depth;
+		/*
 		var moved = from tile in tiles select (Point2)tile.transform.position + movement;
-		return new Block (
-			from point in moved select TileContainer.Instance.getTile(point, depth),
-			polymino
-		);
+		from point in moved select TileContainer.Instance.getTile (point, depth),
+		polymino
+			);
+		*/
+		var moved = new List<Point2>();
+		foreach (var tile in tiles) {
+			moved.Add((Point2)tile.transform.position + movement);
+		}
+		var movedTiles = new List<Tile> ();
+		foreach (var point in moved) {
+			movedTiles.Add(TileContainer.Instance.getTile (point, depth));
+		}
+		return new Block (movedTiles, polymino);
 	}
 
 	// clockwise
-	public Block rotateQuarter(Point2 pivot) {
+	public Block rotateQuarter(Point2 pivot, int quadrant = 1) {
 		var depth = tiles.First ().depth;
+		/*
 		var rotated = from tile in tiles 
 			let delta = tile.point - pivot
 			select new Point2(-delta.y, delta.x) + pivot;
 		return new Block (
-			from point in rotated select TileContainer.Instance.getTile(point, depth),
+			from point in rotated select TileContainer.Instance.getTile (point, depth),
 			polymino
 		);
+		*/
+		var rotated = new List<Point2>();
+		foreach(var tile in tiles) {
+			var deltaPoint = tile.point - pivot;
+			/*
+			switch(quadrant) {
+			case 1: deltaPoint = new Point2(-deltaPoint.y, deltaPoint.x); break;
+			case 2: deltaPoint = new Point2(-deltaPoint.x, -deltaPoint.y); break;
+			case 3: deltaPoint = new Point2(deltaPoint.y, -deltaPoint.x); break;
+			}
+			*/
+			rotated.Add(new Point2(-deltaPoint.y, deltaPoint.x) + pivot);
+		}
+
+		var rotatedTiles = new List<Tile> ();
+		foreach (var point in rotated) {
+			rotatedTiles.Add(TileContainer.Instance.getTile (point, depth));
+		}
+		return new Block (rotatedTiles, polymino);
 	}
 
 	public void moveTiles(Block newBlock) {
-		var tileSets = tiles.Zip (
-			newBlock.tiles,
-			(oldTile, newTile) =>  new { oldTile=oldTile, newTile=newTile }
-		);
-		foreach (var tileSet in tileSets) {
-			TileContainer.Instance.moveTile(tileSet.oldTile, tileSet.newTile.point);
-		}
+		TileContainer.Instance.moveBlock (this, newBlock);
 	}
 
-	public static bool operator !=(Block b1, Block b2) {
-		var idx1List = from t1 in b1.tiles orderby t1.point.idx select t1.point.idx;
-		var idx2List = from t2 in b2.tiles orderby t2.point.idx select t2.point.idx;
-		var idxSets = idx1List.Zip(
-			idx2List,
-			(idx1, idx2) => new { idx1, idx2 }
-		);
-		foreach (var idxSet in idxSets) {
-			if (idxSet.idx1 != idxSet.idx2) {
-				return true;
-			}
-		}
-		return false;
+	public override bool Equals(object obj) {
+		return Equals(obj as Block);
 	}
-
-	public static bool operator ==(Block b1, Block b2) {
-		var idx1List = from t1 in b1.tiles orderby t1.point.idx select t1.point.idx;
-		var idx2List = from t2 in b2.tiles orderby t2.point.idx select t2.point.idx;
+	
+	public bool Equals(Block obj) {
+		var idx1List = from t1 in tiles orderby t1.point.idx select t1.point.idx;
+		var idx2List = from t2 in obj.tiles orderby t2.point.idx select t2.point.idx;
 		var idxSets = idx1List.Zip(
 			idx2List,
 			(idx1, idx2) => new { idx1, idx2 }
@@ -85,6 +104,11 @@ public class Block {
 			}
 		}
 		return true;
+	}
+
+	public override int GetHashCode ()
+	{
+		return base.GetHashCode ();
 	}
 
 	public override string ToString() {
