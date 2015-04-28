@@ -38,7 +38,7 @@ public class StageContainer : MonoBehaviour {
 	private void createStage() {
 		Block destination = BlockFactory.generate (Depth.DESTINATION_DEPTH);
 		Block source = BlockFactory.generate (Depth.SOURCE_DEPTH, destination.polymino);
-		var sampleColor = colors.Sample (2);
+		var sampleColor = colors.Sample (2).ToList();
 		destination.dye(sampleColor.First());
 		source.dye(sampleColor.Last());
 		
