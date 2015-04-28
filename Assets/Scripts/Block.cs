@@ -6,11 +6,11 @@ using ExtensionMethods;
 
 public class Block {
 	public readonly Polyomino polymino;
-	public readonly IEnumerable<Tile> tiles;
+	public readonly IList<Tile> tiles;
 	public readonly Color color;
 
 	public Block(IEnumerable<Tile> tiles, Polyomino polymino) {
-		this.tiles = tiles;
+		this.tiles = tiles.ToList();
 		this.polymino = polymino;
 	}
 

@@ -9,11 +9,11 @@ public class TimeContainer : MonoBehaviour {
 	public static TimeContainer Instance {
 		get {
 			if (!_instance) {
-				_instance = GameObject.FindObjectOfType(typeof(TimeContainer)) as TimeContainer;
+				_instance = FindObjectOfType<TimeContainer>();
 				if (!_instance) {
 					GameObject container = new GameObject();
 					container.name = "TimeContainer";
-					_instance = container.AddComponent(typeof(TimeContainer)) as TimeContainer;
+					_instance = container.AddComponent<TimeContainer>();
 				}
 			}
 			return _instance;
