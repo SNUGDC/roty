@@ -31,7 +31,7 @@ public class Tutorial1 : MonoBehaviour {
 		impossible.enabled = false;
 
 		next.onClick.AddListener(() => {
-			Application.LoadLevel("tutorial2");
+			Application.LoadLevel("tutorial1.5");
 		});
 
 		possible.onClick.AddListener(() => {

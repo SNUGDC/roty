@@ -21,7 +21,7 @@ public class Tutorial2 : MonoBehaviour {
 	private float fadeinSpeed = 3.0f;
 	private bool gotonext = false;
 	private float timechecker;
-	private int i = 2;
+	private float i = 1.5f;
 
 	// Use this for initialization
 	void Start () {
@@ -82,7 +82,7 @@ public class Tutorial2 : MonoBehaviour {
 			impossible.transform.position = new Vector3(10000f,10000f,1000f);
 			if(Time.time > timechecker + 1){
 				blocks.transform.rotation = Quaternion.Slerp(blocks.transform.rotation, Quaternion.Euler(new Vector3(0.0f,0.0f,90.0f)),fadeinSpeed*Time.deltaTime*2);
-				if(Time.time > timechecker + 2.3f){
+				if(Time.time > timechecker + 2){
 					gotonext=true;
 				}
 			}
@@ -92,7 +92,7 @@ public class Tutorial2 : MonoBehaviour {
 				blocks.transform.Find("2").localPosition = new Vector3(0,0,-2);
 				blocks.transform.Find("3").localPosition = new Vector3(-1,1,-2);
 				blocks.transform.rotation = Quaternion.Euler (new Vector3(0,0,0));
-				timechecker = Time.time;
+				timechecker = Time.time - 0.7f;
 				i = 9999;
 			}
 		}
