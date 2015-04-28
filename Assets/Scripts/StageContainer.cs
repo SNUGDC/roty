@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Linq;
 using ExtensionMethods;
@@ -92,9 +93,6 @@ public class StageContainer : MonoBehaviour {
 	}
 	
 	public void StartLevel() {
-		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
-			button.enabled = true;
-		}
 		gotToNextStage ();
 		TileContainer.Instance.createMap ();
 		createStage ();
@@ -104,17 +102,28 @@ public class StageContainer : MonoBehaviour {
 	public void OnClickStage() {
 		if (Time.timeScale == 0) {
 			Time.timeScale = 1.0f;
+			GameObject.Find ("Try again!").GetComponent<Text> ().enabled = false;
+			var trigger = transform.parent.gameObject.GetComponent<EventTrigger> ();
+			trigger.delegates.Clear();
 			StartLevel();
+			foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
+				button.enabled = true;
+			}
 		}
 	}
 
 	public void EndLevel() {
-		GetComponent<Text>().text = "Try again!";
 		Time.timeScale = 0;
 		count = 0;
 		foreach (var button in transform.parent.GetComponentsInChildren<Button>()) {
 			button.enabled = false;
 		}
+		GameObject.Find ("Try again!").GetComponent<Text> ().enabled = true;
+		var trigger = transform.parent.gameObject.GetComponent<EventTrigger> ();
+		EventTrigger.Entry entry = new EventTrigger.Entry();
+		entry.eventID = EventTriggerType.PointerClick;
+		entry.callback.AddListener(	(eventData) => OnClickStage() );
+		trigger.delegates.Add(entry);
 	}
 
 	public void OnPressPossible() {

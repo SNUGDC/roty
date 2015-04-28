@@ -38,6 +38,7 @@ public class TimeContainer : MonoBehaviour {
 		due -= Time.deltaTime;
 		if (due < 0) {
 			StageContainer.Instance.EndLevel();
+			due = limit;
 		}
 		GetComponent<RectTransform> ().sizeDelta = new Vector2 (
 			due / limit * size.x, 
