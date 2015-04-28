@@ -12,7 +12,7 @@ public class BlockFactory {
 	};
 
 	public static Block generate(int depth, Polyomino frame = null) {
-		frame = frame != null ? frame : candidates.Sample ().Single ();
+		frame = frame ?? candidates.Sample ().Single ();
 		var offset = new Point2 (Random.Range (0, TileContainer.Instance.size - frame.constraints.x),
 		                         Random.Range (0, TileContainer.Instance.size - frame.constraints.y));
 

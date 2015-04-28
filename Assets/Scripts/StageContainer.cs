@@ -12,11 +12,11 @@ public class StageContainer : MonoBehaviour {
 	public static StageContainer Instance {
 		get {
 			if (!_instance) {
-				_instance = GameObject.FindObjectOfType(typeof(StageContainer)) as StageContainer;
+				_instance = GameObject.FindObjectOfType<StageContainer>();
 				if (!_instance) {
 					GameObject container = new GameObject();
 					container.name = "StageContainer";
-					_instance = container.AddComponent(typeof(StageContainer)) as StageContainer;
+					_instance = container.AddComponent<StageContainer>();
 				}
 			}
 			return _instance;
@@ -38,9 +38,9 @@ public class StageContainer : MonoBehaviour {
 	private void createStage() {
 		Block destination = BlockFactory.generate (Depth.DESTINATION_DEPTH);
 		Block source = BlockFactory.generate (Depth.SOURCE_DEPTH, destination.polymino);
-		var sampleColor = colors.Sample (2).ToList();
-		destination.dye(sampleColor.First());
-		source.dye(sampleColor.Last());
+		var sampleColors = colors.Sample (2).ToList();
+		destination.dye(sampleColors.First());
+		source.dye(sampleColors.Last());
 		
 		foreach (var count in Enumerable.Range(0, Random.Range(0, 3))) {
 			Point2 point = source.tiles.Sample().First().point;
@@ -98,7 +98,7 @@ public class StageContainer : MonoBehaviour {
 		gotToNextStage ();
 		TileContainer.Instance.createMap ();
 		createStage ();
-		(FindObjectOfType (typeof(TimeContainer)) as TimeContainer).StartLevel ();
+		FindObjectOfType<TimeContainer>().StartLevel ();
 	}
 
 	public void OnClickStage() {
