@@ -13,7 +13,7 @@ public class Tutorial : MonoBehaviour {
 	private float fadeinSpeed = 3.0f;
 	private bool gotonext = false;
 	private float timechecker;
-	private float rotationleft = 360;
+	private float rotationleft = 0;
 	private float rotationspeed = 500;
 	private int rotationcount = 1;
 	
@@ -46,19 +46,22 @@ public class Tutorial : MonoBehaviour {
 		
 		TutorialAppears ();
 
-		if(Time.time > timechecker + 2 & rotationcount == 1){
+		if(Time.time > timechecker + 2 && rotationcount == 1 && rotationleft ==0){
+			Debug.Log ("coroutine"+rotationcount);
+			rotationleft = 360;
 			StartCoroutine(Rotation());
 		}
-		if(rotationleft == 0 & rotationcount == 2){
+		if(rotationleft == 0 && rotationcount == 2){
 			Debug.Log ("coroutine"+rotationcount);
 			blocks.transform.position = new Vector3(0,2,0);
 			blocks.transform.Find("1").localPosition = new Vector3(0,0,-2);
 			blocks.transform.Find("2").localPosition = new Vector3(0,-1,-2);
 			blocks.transform.Find("3").localPosition = new Vector3(1,-1,-2);
 			rotationleft = 360;
+			
 			StartCoroutine(Rotation());
 		}
-		if(rotationleft == 0 & rotationcount == 3){
+		if(rotationleft == 0 && rotationcount == 3){
 			Debug.Log ("coroutine"+rotationcount);
 			blocks.transform.position = new Vector3(1,1,0);
 			blocks.transform.Find("1").localPosition = new Vector3(0,0,-2);
@@ -68,7 +71,7 @@ public class Tutorial : MonoBehaviour {
 			StartCoroutine(Rotation());
 		}
 
-		if(Time.time > timechecker + 7){
+		if(Time.time > timechecker + 5){
 				gotonext=true;
 		}
 
@@ -80,21 +83,23 @@ public class Tutorial : MonoBehaviour {
 
 	IEnumerator Rotation() {
 
-		yield return new WaitForSeconds(1);
+		//Debug.Log ("before wait" + Time.time);
+		yield return new WaitForSeconds(0.5f);
+		//Debug.Log ("after wait" + Time.time);
 
-		if(rotationleft > rotationspeed*Time.deltaTime){
+		while (rotationleft > rotationspeed*Time.deltaTime) 
+		{
 			rotationleft -= rotationspeed*Time.deltaTime;
+			blocks.transform.Rotate(0,0,rotationspeed*Time.deltaTime);
+			yield return null;
 		}
-
-		else{
-			rotationleft = 0;
-			rotationcount ++;
-			Debug.Log("good");
-			blocks.transform.Rotate (Vector3.zero);
-			yield break;
-		}
-
-		blocks.transform.Rotate(0,0,rotationspeed*Time.deltaTime);
+		
+		
+		blocks.transform.rotation = Quaternion.Euler(Vector3.zero);
+		rotationleft = 0;
+		rotationcount ++;
+		Debug.Log("good");
+		
 	}
 	
 }
